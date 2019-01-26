@@ -2,25 +2,137 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>hrm</title>
+    <title>human resource machine vm</title>
     <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
       body {
         font-family: sans-serif;
+      }
+      h1,
+      h2,
+      p,
+      pre {
+        margin: 0;
+      }
+      h1 {
+        font-size: 22px;
+        text-align: right;
+        color: #844;
+      }
+      h2 {
+        font-size: 18px;
+      }
+      textarea {
+        font-size: 13px;
+        border: 0;
+        color: #3f3;
+        background-color: #111;
+        resize: none;
+      }
+      button {
+        font-size: 15px;
+        padding: 4px 8px;
+        color: #ddd;
+        border: 0;
+        background-color: #333;
+      }
+      #header {
+        padding-left: 10vw;
+      }
+      #lines {
+        display: inline-block;
+        width: 20px;
+        overflow: hidden;
+        height: 40vh;
+        pointer-events: none;
+      }
+      #program {
+        font-weight: bold;
+        width: calc(50vw - 34px);
+        height: 40vh;
+      }
+      #output-pre {
+        font-size: 13px;
+        height: 40vh;
+        overflow: auto;
+        color: #eee;
+        background-color: #222;
+        font-weight: bold;
+      }
+      .two {
+        font-size: 0;
+        display: flex;
+      }
+      .two > div {
+        flex: 1;
       }
     </style>
   </head>
   <body>
-    <h3>output:</h3>
-    <pre><code id="output"></code></pre>
-    <h3>program:</h3>
-    <textarea id="program">
-inbox
-outbox
-jump 0</textarea
-    >
+    <h1>human resource machine vm</h1>
+
+    <div id="header">
+      <h2>objective:</h2>
+      <p id="objective"></p>
+    </div>
+
+    <div class="two">
+      <div>
+        <h2>program:</h2>
+        <textarea readonly="true" id="lines"></textarea>
+        <textarea
+          id="program"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          onscroll="syncTA()"
+        ></textarea>
+      </div>
+      <div>
+        <h2>output:</h2>
+        <pre id="output-pre"><code id="output"></code></pre>
+      </div>
+    </div>
+
     <br />
     <button id="reset">reset</button> <button id="run">run</button>
+
+    <pre id="instructions"><code>
+supported commands:
+- inbox
+- outbox
+- copyfrom &lt;cell index&gt;
+- copyto   &lt;cell index&gt;
+- jump     &lt;line number&gt;
+- jump0    &lt;line number&gt;
+- jumpneg  &lt;line number&gt;
+- add      &lt;cell index&gt;
+- sub      &lt;cell index&gt;
+    </code></pre>
+
     <script src="hrm.js"></script>
     <script src="index.js"></script>
+
+    <script>
+      const linesEl = document.getElementById('lines');
+      const sourceEl = document.getElementById('program');
+
+      function syncTA() {
+        linesEl.scrollTop = sourceEl.scrollTop;
+      }
+
+      (function populateTA() {
+        let text = '';
+        for (let i = 0; i < 100; ++i) {
+          text += (i < 10 ? ' ' : '') + i + '\r\n';
+        }
+        linesEl.value = text;
+      })();
+    </script>
   </body>
 </html>

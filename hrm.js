@@ -1,9 +1,32 @@
+function equals(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function clone(o) {
+  return JSON.parse(JSON.stringify(o));
+}
+
+function nZeros(n) {
+  const arr = new Array(n);
+  arr.fill(0);
+  return arr;
+}
+
+function randomInt(n) {
+  return Math.floor(Math.random() * n);
+}
+
+function randomArray(arr) {
+  const n = arr.length;
+  return arr[randomInt(n)];
+}
+
 /*
 IN  .....* ->
 OUT        -> *.....
 */
 
-const MAX_STEPS = 10;
+const MAX_STEPS = 20;
 
 const OPS = {
   inbox: function() {
@@ -12,10 +35,10 @@ const OPS = {
   outbox: function() {
     this.out.unshift(this.hand);
   },
-  copyFrom: function(index) {
+  copyfrom: function(index) {
     this.hand = this.cells[index];
   },
-  copyTo: function(index) {
+  copyto: function(index) {
     this.cells[index] = this.hands;
   },
   jump: function(lineNo) {
@@ -26,14 +49,18 @@ const OPS = {
       this.lineNo = lineNo - 1;
     }
   },
+  jumpneg: function(lineNo) {
+    if (this.hand < 0) {
+      this.lineNo = lineNo - 1;
+    }
+  },
   add: function(index) {
     this.hand += this.cells[index];
+  },
+  sub: function(index) {
+    this.hand -= this.cells[index];
   }
 };
-
-function naiveEquals(a, b) {
-  return JSON.stringify(a) === JSON.stringify(b);
-}
 
 function step(level, cmdName, arg0) {
   const fn = OPS[cmdName];
@@ -45,7 +72,7 @@ function printLevel(level) {
   in:    ${JSON.stringify(level.in)}
   cells: ${JSON.stringify(level.cells)}
   out:   ${JSON.stringify(level.out)}
-  hand:  ${JSON.stringify(level.hand)}
+  hand:  ${level.hand !== undefined ? JSON.stringify(level.hand) : ''}
 `);
 }
 
