@@ -16,6 +16,7 @@ h1 {
   font-size: 22px;
   text-align: right;
   color: #844;
+  padding-right: 150px;
 }
 h2 {
   font-size: 18px;
@@ -28,11 +29,13 @@ textarea {
   resize: none;
 }
 button {
-  font-size: 15px;
-  padding: 4px 8px;
+  font-size: 16px;
+  padding: 5px 10px;
   color: #ddd;
   border: 0;
   background-color: #333;
+  border-radius: 3px;
+  cursor: pointer;
 }
 #header {
   padding-left: 10vw;

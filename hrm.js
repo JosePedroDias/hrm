@@ -125,7 +125,7 @@ function printLevel(level) {
   cells: ${JSON.stringify(level.cells)}
   out:   ${JSON.stringify(level.out)}
   hand:  ${level.hand !== undefined ? JSON.stringify(level.hand) : ''}
-`);
+\n`);
 }
 
 function run(level, program) {
@@ -145,15 +145,15 @@ function run(level, program) {
 
     try {
       log(
-        `<< step no ${level.steps} >>     ${level.lineNo}: ${cmdName} ${
+        `<< step #${level.steps + 1} >>     line #${level.lineNo}: ${cmdName} ${
           arg0 !== undefined ? JSON.stringify(arg0) : ''
-        }`
+        }\n`
       );
       step(level, cmdName, arg0);
     } catch (ex) {
       if (ex) {
-        log(`ERROR: ${ex}`);
-        log('aborting program.');
+        log(`ERROR: ${ex}\n`);
+        log('aborting program.\n');
         return;
       }
     }
@@ -163,7 +163,7 @@ function run(level, program) {
     printLevel(level);
 
     if (level.successReached(level)) {
-      log('program completed the objective! all done.');
+      log('program completed the objective! all done.\n');
       return;
     }
   }
