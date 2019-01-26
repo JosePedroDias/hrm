@@ -1,3 +1,5 @@
+'use strict';
+
 (function() {
   function qs(sel) {
     return document.querySelector(sel);

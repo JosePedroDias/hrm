@@ -1,0 +1,66 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+body {
+  font-family: sans-serif;
+}
+h1,
+h2,
+p,
+pre {
+  margin: 0;
+}
+h1 {
+  font-size: 22px;
+  text-align: right;
+  color: #844;
+}
+h2 {
+  font-size: 18px;
+}
+textarea {
+  font-size: 13px;
+  border: 0;
+  color: #3f3;
+  background-color: #111;
+  resize: none;
+}
+button {
+  font-size: 15px;
+  padding: 4px 8px;
+  color: #ddd;
+  border: 0;
+  background-color: #333;
+}
+#header {
+  padding-left: 10vw;
+}
+#lines {
+  display: inline-block;
+  width: 20px;
+  overflow: hidden;
+  height: 40vh;
+  pointer-events: none;
+}
+#program {
+  font-weight: bold;
+  width: calc(50vw - 34px);
+  height: 40vh;
+}
+#output-pre {
+  font-size: 13px;
+  height: 40vh;
+  overflow: auto;
+  color: #eee;
+  background-color: #222;
+  font-weight: bold;
+}
+.two {
+  font-size: 0;
+  display: flex;
+}
+.two > div {
+  flex: 1;
+}
