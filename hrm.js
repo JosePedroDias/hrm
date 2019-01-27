@@ -39,7 +39,7 @@ IN  .....* ->
 OUT        -> *.....
 */
 
-const MAX_STEPS = 20;
+const MAX_STEPS = 40;
 
 const OPS = {
   inbox: function() {
@@ -128,7 +128,7 @@ function printLevel(level) {
 \n`);
 }
 
-function run(level, program) {
+function* run(level, program) {
   level.lineNo = 0;
   level.steps = 0;
 
@@ -137,18 +137,13 @@ function run(level, program) {
     return tokens.map((t, i) => (i === 0 ? t : parseInt(t, 10)));
   });
 
-  printLevel(level);
+  yield level;
 
   // so it does not run indefinetely
   while (level.steps < MAX_STEPS) {
     const [cmdName, arg0] = commands[level.lineNo];
 
     try {
-      log(
-        `<< step #${level.steps + 1} >>     line #${level.lineNo}: ${cmdName} ${
-          arg0 !== undefined ? JSON.stringify(arg0) : ''
-        }\n`
-      );
       step(level, cmdName, arg0);
     } catch (ex) {
       if (ex) {
@@ -160,11 +155,11 @@ function run(level, program) {
     level.steps += 1;
     level.lineNo += 1;
 
-    printLevel(level);
-
     if (level.successReached(level)) {
       log('program completed the objective! all done.\n');
-      return;
+      return level;
     }
+
+    yield level;
   }
 }

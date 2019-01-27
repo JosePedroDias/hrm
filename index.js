@@ -10,7 +10,9 @@
   const outputPreEl = qs('pre');
   const outputEl = qs('#output');
   const resetBtnEl = qs('#reset');
+  const stepEl = qs('#step');
   const runEl = qs('#run');
+  const speedEl = qs('#speed');
 
   function log(s) {
     outputEl.appendChild(document.createTextNode(s));
@@ -50,21 +52,66 @@
     return level;
   }
 
-  let currentLevel = reset(0);
-  objectiveEl.innerHTML = currentLevel.description;
   programEl.value = `inbox
 jump0 3
 jump 0
 outbox
 jump 0`;
 
+  let currentLevel = reset(0);
+  objectiveEl.innerHTML = currentLevel.description;
+  let execution = run(currentLevel, programEl.value);
+
+  function onStep(level, lastCall) {
+    !lastCall &&
+      log(
+        `<< step #${level.steps} >> next line is #${level.lineNo}: ${
+          programEl.value.split('\n')[level.lineNo]
+        }\n`
+      );
+
+    printLevel(level);
+  }
+
+  let timer;
+
+  function killTimer() {
+    if (!timer) {
+      return;
+    }
+    clearInterval(timer);
+    stepEl.removeAttribute('disabled');
+    runEl.removeAttribute('disabled');
+    timer = undefined;
+  }
+
   resetBtnEl.addEventListener('click', (ev) => {
+    killTimer();
     currentLevel = reset(0);
     outputEl.innerHTML = '';
+    execution = run(currentLevel, programEl.value);
+  });
+
+  stepEl.addEventListener('click', (ev) => {
+    killTimer();
+    const { value, done } = execution.next();
+    onStep(value, done);
   });
 
   runEl.addEventListener('click', (ev) => {
-    const program = programEl.value;
-    run(currentLevel, program);
+    stepEl.setAttribute('disabled', '');
+    runEl.setAttribute('disabled', '');
+
+    const STEP_MS = parseInt(speedEl.value, 10);
+
+    function eachTime() {
+      const { value, done } = execution.next();
+      onStep(value, done);
+      if (done) {
+        killTimer();
+      }
+    }
+
+    timer = setInterval(eachTime, STEP_MS);
   });
 })();

@@ -37,6 +37,9 @@ button {
   border-radius: 3px;
   cursor: pointer;
 }
+button:disabled {
+  opacity: 0.5;
+}
 #header {
   padding-left: 10vw;
 }

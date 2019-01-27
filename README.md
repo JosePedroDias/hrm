@@ -5,5 +5,5 @@ lovely game Human Resource Machine.
 
 ## TODO LIST
 
-- support step?
+- reset function seems buggy (arrays are not properly reset?)
 - optional visual representation
