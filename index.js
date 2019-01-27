@@ -60,9 +60,11 @@ jump 0`;
 
   let currentLevel = reset(0);
   objectiveEl.innerHTML = currentLevel.description;
-  let execution = run(currentLevel, programEl.value);
+  let execution;
 
   function onStep(level, lastCall) {
+    printLevel(level);
+
     !lastCall &&
       log(
         `<< step #${level.steps} >> next line is #${level.lineNo}: ${
@@ -70,7 +72,9 @@ jump 0`;
         }\n`
       );
 
-    printLevel(level);
+    lastCall && log('program halted.');
+
+    level.completed && log('\nobjective completed.');
   }
 
   let timer;
@@ -89,16 +93,21 @@ jump 0`;
     killTimer();
     currentLevel = reset(0);
     outputEl.innerHTML = '';
-    execution = run(currentLevel, programEl.value);
+    execution = undefined;
   });
 
   stepEl.addEventListener('click', (ev) => {
+    if (!execution) {
+      execution = run(currentLevel, programEl.value);
+    }
     killTimer();
     const { value, done } = execution.next();
     onStep(value, done);
   });
 
   runEl.addEventListener('click', (ev) => {
+    execution = run(currentLevel, programEl.value);
+
     stepEl.setAttribute('disabled', '');
     runEl.setAttribute('disabled', '');
 
@@ -108,6 +117,7 @@ jump 0`;
       const { value, done } = execution.next();
       onStep(value, done);
       if (done) {
+        execution = undefined;
         killTimer();
       }
     }

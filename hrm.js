@@ -44,37 +44,37 @@ const MAX_STEPS = 40;
 const OPS = {
   inbox: function() {
     if (this.in.length === 0) {
-      throw 'inbox is empty!';
+      throw new Error('inbox is empty!');
     }
     this.hand = this.in.pop();
   },
   outbox: function() {
     if (this.hand === undefined) {
-      throw 'outbox requires hand!';
+      throw new Error('outbox requires hand!');
     }
     this.out.unshift(this.hand);
   },
   copyfrom: function(index) {
     if (!isInteger(index)) {
-      throw 'copyfrom argument 0 (index) must be an integer!';
+      throw new Error('copyfrom argument 0 (index) must be an integer!');
     }
     this.hand = this.cells[index];
   },
   copyto: function(index) {
     if (!isInteger(index)) {
-      throw 'copyto argument 0 (index) must be an integer!';
+      throw new Error('copyto argument 0 (index) must be an integer!');
     }
     this.cells[index] = this.hands;
   },
   jump: function(lineNo) {
     if (!isInteger(lineNo)) {
-      throw 'jump argument 0 (lineNo) must be an integer!';
+      throw new Error('jump argument 0 (lineNo) must be an integer!');
     }
     this.lineNo = lineNo - 1;
   },
   jump0: function(lineNo) {
     if (!isInteger(lineNo)) {
-      throw 'jump0 argument 0 (lineNo) must be an integer!';
+      throw new Error('jump0 argument 0 (lineNo) must be an integer!');
     }
     if (this.hand === 0) {
       this.lineNo = lineNo - 1;
@@ -82,7 +82,7 @@ const OPS = {
   },
   jumpneg: function(lineNo) {
     if (!isInteger(lineNo)) {
-      throw 'jumpneg argument 0 (lineNo) must be an integer!';
+      throw new Error('jumpneg argument 0 (lineNo) must be an integer!');
     }
     if (this.hand < 0) {
       this.lineNo = lineNo - 1;
@@ -90,25 +90,25 @@ const OPS = {
   },
   add: function(index) {
     if (!isInteger(index)) {
-      throw 'add argument 0 (index) must be an integer!';
+      throw new Error('add argument 0 (index) must be an integer!');
     }
     if (!isNumber(this.hand)) {
-      throw 'hand must have a number!';
+      throw new Error('hand must have a number!');
     }
     if (!isNumber(this.cells[index])) {
-      throw `cell #${index} must have a number!`;
+      throw new Error(`cell #${index} must have a number!`);
     }
     this.hand += this.cells[index];
   },
   sub: function(index) {
     if (!isInteger(index)) {
-      throw 'add argument 0 (index) must be an integer!';
+      throw new Error('add argument 0 (index) must be an integer!');
     }
     if (!isNumber(this.hand)) {
-      throw 'hand must have a number!';
+      throw new Error('hand must have a number!');
     }
     if (!isNumber(this.cells[index])) {
-      throw `cell #${index} must have a number!`;
+      throw new Error(`cell #${index} must have a number!`);
     }
     this.hand -= this.cells[index];
   }
@@ -116,6 +116,9 @@ const OPS = {
 
 function step(level, cmdName, arg0) {
   const fn = OPS[cmdName];
+  if (!fn) {
+    throw new Error(`opcode ${cmdName} is unsupported!`);
+  }
   fn.call(level, arg0);
 }
 
@@ -148,15 +151,14 @@ function* run(level, program) {
     } catch (ex) {
       if (ex) {
         log(`ERROR: ${ex}\n`);
-        log('aborting program.\n');
-        return;
+        return level;
       }
     }
     level.steps += 1;
     level.lineNo += 1;
 
     if (level.successReached(level)) {
-      log('program completed the objective! all done.\n');
+      level.completed = true;
       return level;
     }
 
